@@ -1,25 +1,26 @@
-name: Build and test House Renting
+pipeline {
+    agent any
 
-on:
-  push:
-    branches:
-      - 'develop'
-      - 'feature'
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    stages {
+		stage ('Checkout') {
+			steps { 
+				checkout scm
+			}
+		}
+        stage('Restore the project') {
+            steps {
+                bat 'dotnet restore'
+            }
+        }
+        stage('Build the project') {
+            steps {
+                bat 'dotnet build --no-restore'
+            }
+        }
+        stage('Test the project') {
+            steps {
+                bat 'dotnet test --no-build --verbosity normal'
+            }
+        }
+    }
+}
